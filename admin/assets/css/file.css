@@ -1,0 +1,20 @@
+div#sp-file-optimization-root {
+    background: white;
+    padding: 20px 15px;
+}
+.sp-page-heading{
+    border-bottom: 1px solid rgba(255, 166, 0, 0.22);
+    padding: 20px 0px;
+}
+h2.sp-css-heading {
+    margin-top: 50px;
+    color: #fda300;
+}
+h4.setting-title {
+    margin: 0px 10px;
+}
+
+p.settings-des {
+    margin: 0px 10px;
+    color: #666;
+}
