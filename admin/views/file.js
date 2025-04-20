@@ -191,21 +191,6 @@ var File = function File() {
     className: "setting-title"
   }, "Minify CSS"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
     className: "settings-des"
-  }, "Minify CSS removes whitespace and comments to reduce the file size."))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: styles.column
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "left"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
-    type: "checkbox",
-    checked: isChecked,
-    onChange: handleCheckboxChange,
-    style: styles.checkbox
-  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "right"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h4", {
-    className: "setting-title"
-  }, "Minify CSS"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
-    className: "settings-des"
   }, "Minify CSS removes whitespace and comments to reduce the file size.")))));
 };
 var initFile = function initFile() {

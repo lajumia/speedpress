@@ -55,22 +55,7 @@ const File = () => {
             
               
             </div>
-            <div style={styles.column}>
-              <div className="left">
-                <input
-                    type="checkbox"
-                    checked={isChecked}
-                    onChange={handleCheckboxChange}
-                    style={styles.checkbox}
-                />
-              </div>
-              <div className="right">
-                <h4 className="setting-title">Minify CSS</h4>
-                <p className="settings-des">Minify CSS removes whitespace and comments to reduce the file size.</p>
-              </div>
             
-              
-            </div>
             
           </div>
 

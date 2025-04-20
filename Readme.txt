@@ -12,7 +12,7 @@ Some plugins can automatically remove or optimize unused CSS:
 - Asset CleanUp: Allows you to unload unused CSS on specific pages.
 - WP Rocket: Has a "Remove Unused CSS" feature in its performance settings.
 - Perfmatters: Helps disable unnecessary CSS files for faster loading.
-- Autoptimize: Combines, minifies, and eliminates unused CSS.
+- Autoptimize: Combines, minifies, and eliminates unused CSS. VERIFIED BM - Facebook Business Manager
 
 3. Manually Remove Unused CSS
 For a more controlled approach, you can manually clean unused CSS:
