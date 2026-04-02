@@ -1,0 +1,17 @@
+{
+    "name": "user/speedpress",
+    "autoload": {
+        "psr-4": {
+            "SpeedPress\\": "core/",
+            "SpeedPress\\Modules\\": "modules/",
+            "SpeedPress\\Admin\\": "admin/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Md Laju Mia",
+            "email": "developerlaju@gmail.com"
+        }
+    ],
+    "require": {}
+}
