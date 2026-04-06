@@ -57,20 +57,44 @@ class Admin {
      * @return void
      */
     public function render_page() {
-        echo '<div id="speedpress-admin-root"><h1>Speedpress</h1></div>';
+        echo '<div id="speedpress-admin-root"></div>';
     }
 
     /**
      * 
      */
-    public function enqueue_admin_scripts() {
-        //$asset_file = include(plugin_dir_path(__FILE__) . '../build/admin.asset.php');
+   public function enqueue_admin_scripts() {
+        $manifest_file = SPEEDPRESS_DIR . 'admin/build/.vite/manifest.json';
 
-        // wp_enqueue_script(
-        //     'speedpress-admin',
-        //     plugin_dir_url(__FILE__) . '../build/admin.js',
-        //     $asset_file['dependencies'],
-        //     $asset_file['version']
-        // );
+        if ( file_exists( $manifest_file ) ) {
+            $assets = json_decode( file_get_contents( $manifest_file ), true );
+
+            // Your entry file from manifest
+            $entry = 'src/main.tsx';
+
+            if ( isset( $assets[$entry] ) ) {
+
+                // Enqueue CSS
+                if ( isset( $assets[$entry]['css'] ) && is_array( $assets[$entry]['css'] ) ) {
+                    foreach ( $assets[$entry]['css'] as $css_file ) {
+                        wp_enqueue_style(
+                            'speedpress-admin-' . md5($css_file),
+                            SPEEDPRESS_URL . 'admin/build/' . $css_file,
+                            [],
+                            SPEEDPRESS_VERSION
+                        );
+                    }
+                }
+
+                // Enqueue JS
+                wp_enqueue_script(
+                    'speedpress-admin',
+                    SPEEDPRESS_URL . 'admin/build/' . $assets[$entry]['file'],
+                    ['wp-element'],
+                    SPEEDPRESS_VERSION,
+                    true
+                );
+            }
+        }
     }
 }
