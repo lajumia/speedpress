@@ -2,10 +2,10 @@
     "name": "user/speedpress",
     "autoload": {
         "psr-4": {
-            "SpeedPress\\": "core/",
-            "SpeedPress\\Modules\\": "modules/",
-            "SpeedPress\\Admin\\": "admin/"
-        }
+            "SpeedPress\\Core\\": "core/",
+            "SpeedPress\\Admin\\": "admin/",
+            "SpeedPress\\Modules\\": "modules/"
+            }
     },
     "authors": [
         {

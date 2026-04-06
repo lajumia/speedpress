@@ -1,8 +1,9 @@
 <?php
 
 namespace SpeedPress\Core;
+use SpeedPress\Admin\Admin;
 
-use SpeedPress\Core\Loader;
+defined('ABSPATH') or die("No script kiddies please!");
 
 /**
  * Class Bootstrap
@@ -31,6 +32,14 @@ class Bootstrap {
     protected $plugin_file;
 
     /**
+     * Admin class instance.
+     *
+     * @var Admin
+     * @since 1.0.0
+     */
+    protected $admin;
+
+    /**
      * Constructor
      *
      * @param string $plugin_file Full path to main plugin file.
@@ -52,9 +61,8 @@ class Bootstrap {
      */
     public function run() {
         $this->define_constants();
-        $this->load_dependencies();
         $this->register_hooks();
-        $this->register_admin_assets();
+        $this->init_admin();
         $this->run_modules();
     }
 
@@ -95,20 +103,6 @@ class Bootstrap {
     }
 
     /**
-     * Load additional dependencies
-     *
-     * This is optional and used when Composer or
-     * manual includes are required.
-     *
-     * @return void
-     * @since 1.0.0
-     */
-    private function load_dependencies() {
-        // Example:
-        // require_once SPEEDPRESS_PATH . 'src/helpers/helpers.php';
-    }
-
-    /**
      * Register global WordPress hooks
      *
      * Handles plugin lifecycle hooks such as activation
@@ -128,84 +122,6 @@ class Bootstrap {
             $this->plugin_file,
             [ $this, 'on_deactivate' ]
         );
-    }
-
-    /**
-     * Register and enqueue admin assets
-     *
-     * Loads CSS and JS files only on plugin admin pages
-     * to improve performance.
-     *
-     * @return void
-     * @since 1.0.0
-     */
-    private function register_admin_assets() {
-
-        add_action( 'admin_enqueue_scripts', function( $hook ) {
-
-            /**
-             * Only load assets on SpeedPress admin pages
-             *
-             * @var string $hook Current admin page hook suffix
-             */
-            if ( strpos( $hook, 'speedpress' ) === false ) {
-                return;
-            }
-
-            wp_register_style(
-                'speedpress-admin',
-                SPEEDPRESS_URL . 'src/Admin/assets/admin.css',
-                [],
-                SPEEDPRESS_VERSION
-            );
-
-            wp_register_script(
-                'speedpress-admin',
-                SPEEDPRESS_URL . 'src/Admin/assets/admin.js',
-                [ 'jquery' ],
-                SPEEDPRESS_VERSION,
-                true
-            );
-
-            wp_enqueue_style( 'speedpress-admin' );
-            wp_enqueue_script( 'speedpress-admin' );
-        });
-    }
-
-    /**
-     * Initialize and run all modules
-     *
-     * Modules are feature-based components such as:
-     * - CSS Optimization
-     * - JS Optimization
-     * - Cache System
-     *
-     * @return void
-     * @since 1.0.0
-     */
-    private function run_modules() {
-
-        $settings = get_option('speedpress_settings', []);
-
-        // List of modules with their settings key
-        $modules = [
-            'css'   => \SpeedPress\Modules\CSS\CSSModule::class,
-            'js'    => \SpeedPress\Modules\JS\JSModule::class,
-            'cache' => \SpeedPress\Modules\Cache\CacheModule::class,
-        ];
-
-        // Loop through modules
-        foreach ($modules as $key => $class) {
-            if (!class_exists($class)) continue;
-
-            // Pick only the settings group for this module
-            $module_settings = $settings[$key] ?? [];
-
-            $module = new $class($module_settings); // pass only relevant settings
-            if (method_exists($module, 'run')) {
-                $module->run();
-            }
-        }
     }
 
     /**
@@ -248,4 +164,59 @@ class Bootstrap {
         // Example:
         // Clear cache or cleanup
     }
+
+    /**
+     * Register and enqueue admin assets
+     *
+     * Loads CSS and JS files only on plugin admin pages
+     * to improve performance.
+     *
+     * @return void
+     * @since 1.0.0
+     */
+    private function init_admin() {
+
+        $this->admin = new Admin();
+        $this->admin->init();
+    }
+
+    /**
+     * Initialize and run all modules
+     *
+     * Modules are feature-based components such as:
+     * - CSS Optimization
+     * - JS Optimization
+     * - Cache System
+     *
+     * @return void
+     * @since 1.0.0
+     */
+    private function run_modules() {
+
+        $settings = get_option('speedpress_settings', []);
+
+        // List of modules with their settings key
+        $modules = [
+            //'general' => \SpeedPress\Modules\General\GeneralModule::class,
+            // 'cache'   => \SpeedPress\Modules\Cache\CacheModule::class,
+            // 'css'     => \SpeedPress\Modules\CSS\CSSModule::class,
+            // 'js'      => \SpeedPress\Modules\JS\JSModule::class,
+            
+        ];
+
+        // Loop through modules
+        foreach ($modules as $key => $class) {
+            if (!class_exists($class)) continue;
+
+            // Pick only the settings group for this module
+            $module_settings = $settings[$key] ?? [];
+
+            $module = new $class($module_settings); // pass only relevant settings
+            if (method_exists($module, 'run')) {
+                $module->run();
+            }
+        }
+    }
+
+
 }

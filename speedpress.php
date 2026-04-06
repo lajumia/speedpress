@@ -14,35 +14,46 @@
  * Domain Path:       /languages
  */
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || die("No script kiddies please!");
 
-/**
- * ------------------------------------------------------------------------
- * Load Composer Autoloader
- * ------------------------------------------------------------------------
- */
-if ( file_exists( SPEEDPRESS_DIR . 'vendor/autoload.php' ) ) {
-    require_once SPEEDPRESS_DIR . 'vendor/autoload.php';
+// ------------------------------------------------------------------------
+// Load Composer Autoloader
+// ------------------------------------------------------------------------
+$autoload = plugin_dir_path(__FILE__) . 'vendor/autoload.php';
+
+if (file_exists($autoload)) {
+    require_once $autoload;
+} else {
+    // Fallback / Debug
+    die('Error: Composer autoload.php not found. Please run `composer install`.');
 }
 
-/**
- * ------------------------------------------------------------------------
- * Bootstrap the Plugin
- * ------------------------------------------------------------------------
- */
+// ------------------------------------------------------------------------
+// Bootstrap the Plugin
+// ------------------------------------------------------------------------
 use SpeedPress\Core\Bootstrap;
 
 /**
- * Initialize the plugin
- *
- * Wrapped in function to avoid global scope pollution.
+ * Initialize the plugin safely with debug fallback
  *
  * @return void
  */
 function speedpress_init() {
 
-    $app = new Bootstrap( __FILE__ );
-    $app->run();
+    // Check if class exists before instantiating
+    if (!class_exists(Bootstrap::class)) {
+        die('Error: Class SpeedPress\Core\Bootstrap not found. Check autoload & namespace!');
+    }
+
+    $app = new Bootstrap(__FILE__);
+
+    // Optional: Catch runtime errors during run
+    try {
+        $app->run();
+    } catch (\Throwable $e) {
+        // Display error for debugging
+        die('Error running SpeedPress plugin: ' . $e->getMessage());
+    }
 }
 
 // Run plugin
