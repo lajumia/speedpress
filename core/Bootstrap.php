@@ -1,9 +1,11 @@
 <?php
 
 namespace SpeedPress\Core;
-use SpeedPress\Admin\Admin;
 
-defined('ABSPATH') or die("No script kiddies please!");
+use SpeedPress\Admin\Admin;
+use SpeedPress\Core\Logger;
+
+defined('ABSPATH') || exit;
 
 /**
  * Class Bootstrap
@@ -32,7 +34,7 @@ class Bootstrap {
     protected $plugin_file;
 
     /**
-     * Admin class instance.
+     * Admin UI class instance.
      *
      * @var Admin
      * @since 1.0.0
@@ -53,24 +55,35 @@ class Bootstrap {
     /**
      * Run the plugin
      *
-     * This method initializes all required components
-     * of the plugin in correct order.
-     *
      * @return void
      * @since 1.0.0
      */
     public function run() {
-        $this->define_constants();
-        $this->register_hooks();
-        $this->init_admin();
-        $this->run_modules();
+
+        try {
+
+            $this->define_constants();
+            
+            $this->register_hooks();  
+
+            $this->init_admin();
+            
+            $this->run_modules();
+            
+
+        } catch (\Throwable $e) {
+
+            Logger::log($e->getMessage(), 'fatal');
+            Logger::log($e->getTraceAsString(), 'trace');
+
+            if (defined('SPEEDPRESS_DEBUG') && SPEEDPRESS_DEBUG) {
+                wp_die('SpeedPress Error: ' . $e->getMessage());
+            }
+        }
     }
 
     /**
      * Safely define a constant if not already defined.
-     *
-     * @param string $name  Constant name
-     * @param mixed  $value Constant value
      */
     private function safe_define( $name, $value ) {
         if ( ! defined( $name ) ) {
@@ -80,36 +93,27 @@ class Bootstrap {
 
     /**
      * Define plugin constants
-     *
-     * These constants are used globally across the plugin.
-     *
-     * @return void
-     * @since 1.0.0
      */
     private function define_constants() {
 
-        $this->safe_define( 'SPEEDPRESS_FILE', $this->plugin_file ); // Example: /var/www/html/wp-content/plugins/speedpress/speedpress.php
-        $this->safe_define( 'SPEEDPRESS_DIR', plugin_dir_path( $this->plugin_file ) ); // Example: /var/www/html/wp-content/plugins/speedpress/
-        $this->safe_define( 'SPEEDPRESS_URL', plugin_dir_url( $this->plugin_file ) ); // Example: https://example.com/wp-content/plugins/speedpress/
-        $this->safe_define( 'SPEEDPRESS_VERSION', '1.0.0' );
-        $this->safe_define( 'SPEEDPRESS_CACHE_DIR', WP_CONTENT_DIR . '/cache/speedpress/' ); // Example: /var/www/html/wp-content/cache/speedpress/
-        $this->safe_define( 'SPEEDPRESS_CACHE_HTML_DIR', SPEEDPRESS_CACHE_DIR . 'html/'); // Example: /var/www/html/wp-content/cache/speedpress/html/
-        $this->safe_define( 'SPEEDPRESS_CACHE_JS_DIR', SPEEDPRESS_CACHE_DIR . 'js/' ); // Example: /var/www/html/wp-content/cache/speedpress/js/
-        $this->safe_define( 'SPEEDPRESS_CACHE_CSS_DIR', SPEEDPRESS_CACHE_DIR . 'css/' ); // Example: /var/www/html/wp-content/cache/speedpress/css/
-        $this->safe_define( 'SPEEDPRESS_LOG_DIR', SPEEDPRESS_CACHE_DIR . 'logs/' ); // Example: /var/www/html/wp-content/cache/speedpress/logs/
-        $this->safe_define( 'SPEEDPRESS_ASSETS_DIR', SPEEDPRESS_DIR . 'assets/' ); // Example: /var/www/html/wp-content/plugins/speedpress/src/assets/
+        $this->safe_define( 'SPEEDPRESS_FILE', $this->plugin_file ); // Example: /var/www/html/wp-content/plugins/speedpress/speedpress.php 
+        $this->safe_define( 'SPEEDPRESS_DIR', plugin_dir_path( $this->plugin_file ) ); // Example: /var/www/html/wp-content/plugins/speedpress/ 
+        $this->safe_define( 'SPEEDPRESS_URL', plugin_dir_url( $this->plugin_file ) ); // Example: https://example.com/wp-content/plugins/speedpress/ 
+        $this->safe_define( 'SPEEDPRESS_VERSION', '1.0.0' ); 
+        $this->safe_define( 'SPEEDPRESS_CACHE_DIR', WP_CONTENT_DIR . '/cache/speedpress/' ); // Example: /var/www/html/wp-content/cache/speedpress/ 
+        $this->safe_define( 'SPEEDPRESS_CACHE_HTML_DIR', SPEEDPRESS_CACHE_DIR . 'html/'); // Example: /var/www/html/wp-content/cache/speedpress/html/ 
+        $this->safe_define( 'SPEEDPRESS_CACHE_JS_DIR', SPEEDPRESS_CACHE_DIR . 'js/' ); // Example: /var/www/html/wp-content/cache/speedpress/js/ 
+        $this->safe_define( 'SPEEDPRESS_CACHE_CSS_DIR', SPEEDPRESS_CACHE_DIR . 'css/' ); // Example: /var/www/html/wp-content/cache/speedpress/css/ 
+        $this->safe_define( 'SPEEDPRESS_LOG_DIR', SPEEDPRESS_CACHE_DIR . 'logs/' ); // Example: /var/www/html/wp-content/cache/speedpress/logs/ 
+        $this->safe_define( 'SPEEDPRESS_ASSETS_DIR', SPEEDPRESS_DIR . 'assets/' ); // Example: /var/www/html/wp-content/plugins/speedpress/src/assets/ 
         $this->safe_define( 'SPEEDPRESS_ASSETS_URL', SPEEDPRESS_URL . 'assets/' ); // Example: https://example.com/wp-content/plugins/speedpress/src/assets/
 
+        // Debug mode
+        $this->safe_define('SPEEDPRESS_DEBUG', defined('WP_DEBUG') && WP_DEBUG);
     }
 
     /**
      * Register global WordPress hooks
-     *
-     * Handles plugin lifecycle hooks such as activation
-     * and deactivation.
-     *
-     * @return void
-     * @since 1.0.0
      */
     private function register_hooks() {
 
@@ -126,97 +130,75 @@ class Bootstrap {
 
     /**
      * Plugin activation callback
-     *
-     * Runs when plugin is activated.
-     *
-     * @return void
-     * @since 1.0.0
      */
     public function on_activate() {
-        // List of required cache folders
+
+        Logger::log('on_activate() started', 'activation');
+
         $folders = [
-            SPEEDPRESS_CACHE_DIR,          // main cache folder
-            SPEEDPRESS_CACHE_HTML_DIR,     // HTML cache
-            SPEEDPRESS_CACHE_CSS_DIR,      // CSS cache
-            SPEEDPRESS_CACHE_JS_DIR,       // JS cache
-            SPEEDPRESS_LOG_DIR,            // logs
+            SPEEDPRESS_CACHE_DIR,
+            SPEEDPRESS_CACHE_HTML_DIR,
+            SPEEDPRESS_CACHE_CSS_DIR,
+            SPEEDPRESS_CACHE_JS_DIR,
+            SPEEDPRESS_LOG_DIR,
         ];
 
         foreach ($folders as $folder) {
             if (!file_exists($folder)) {
-                wp_mkdir_p($folder); // create folder recursively
+                wp_mkdir_p($folder);
+                Logger::log("Created folder: $folder", 'activation');
             }
         }
 
-        // Optional: clear old cache if needed
-        // $this->clear_cache(); // implement in CacheModule if you want
+        Logger::log('Plugin activated', 'activation');
     }
 
     /**
      * Plugin deactivation callback
-     *
-     * Runs when plugin is deactivated.
-     *
-     * @return void
-     * @since 1.0.0
      */
     public function on_deactivate() {
-        // Example:
-        // Clear cache or cleanup
+       Logger::log('Plugin deactivated', 'deactivation');
     }
 
     /**
-     * Register and enqueue admin assets
-     *
-     * Loads CSS and JS files only on plugin admin pages
-     * to improve performance.
-     *
-     * @return void
-     * @since 1.0.0
+     * Initialize admin
      */
     private function init_admin() {
 
-        $this->admin = new Admin();
-        $this->admin->init();
+        try {
+            $this->admin = new Admin();
+            $this->admin->init();
+
+        } catch (\Throwable $e) {
+            Logger::log('Admin init error: ' . $e->getMessage(), 'admin');
+        }
     }
 
     /**
      * Initialize and run all modules
-     *
-     * Modules are feature-based components such as:
-     * - CSS Optimization
-     * - JS Optimization
-     * - Cache System
-     *
-     * @return void
-     * @since 1.0.0
      */
     private function run_modules() {
 
         $settings = get_option('speedpress_settings', []);
 
-        // List of modules with their settings key
         $modules = [
-            //'general' => \SpeedPress\Modules\General\GeneralModule::class,
+            'general' => \SpeedPress\Modules\General\GeneralModule::class,
             // 'cache'   => \SpeedPress\Modules\Cache\CacheModule::class,
             // 'css'     => \SpeedPress\Modules\CSS\CSSModule::class,
             // 'js'      => \SpeedPress\Modules\JS\JSModule::class,
-            
         ];
 
-        // Loop through modules
         foreach ($modules as $key => $class) {
-            if (!class_exists($class)) continue;
 
-            // Pick only the settings group for this module
             $module_settings = $settings[$key] ?? [];
 
-            $module = new $class($module_settings); // pass only relevant settings
-            if (method_exists($module, 'run')) {
+            try {
+                $module = new $class($module_settings);
                 $module->run();
+
+            } catch (\Throwable $e) {
+                Logger::log("Module error [$key]: " . $e->getMessage(), 'module');
             }
         }
     }
-
-
 }

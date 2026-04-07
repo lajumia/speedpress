@@ -3,15 +3,14 @@
 namespace SpeedPress\Modules\General\Features;
 
 /**
- * Class DisableEmojis
+ * Class DisableSVGFilters
  *
- * Disables WordPress emoji support by removing the default emoji scripts and styles.
- * Useful for performance optimization since emoji scripts/styles add extra HTTP requests.
+ * Disables SVG filters in WordPress to improve front-end performance.
  *
  * @package SpeedPress\Modules\General\Features
  * @since 1.0.0
  */
-class DisableEmojis {
+class DisableSVGFilters {
 
     /**
      * The settings key for this feature.
@@ -21,7 +20,7 @@ class DisableEmojis {
     protected $key;
 
     /**
-     * The value of the setting (true = enabled, false = disabled)
+     * Whether this feature is enabled.
      *
      * @var bool
      */
@@ -41,14 +40,13 @@ class DisableEmojis {
     /**
      * Run the feature
      *
-     * If enabled, removes emoji detection scripts and styles from the front-end.
+     * Disables SVG filters if the feature is enabled.
      *
      * @return void
      */
     public function run() {
         if ($this->value) {
-            remove_action('wp_head', 'print_emoji_detection_script', 7);
-            remove_action('wp_print_styles', 'print_emoji_styles');
+            add_filter('wp_render_svg_use_filters', '__return_false');
         }
     }
 }
