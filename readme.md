@@ -285,7 +285,7 @@ https://www.gnu.org/licenses/gpl-2.0.html
 ## 💡 Author
 
 **SpeedPress Team**
-https://speedpress.io
+https://wpspeedpress.com
 
 ---
 
