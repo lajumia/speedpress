@@ -94,6 +94,11 @@ class Admin {
                     SPEEDPRESS_VERSION,
                     true
                 );
+
+                // Localize script for APi
+                wp_localize_script('speedpress-admin', 'speedpress', [
+                    'nonce' => wp_create_nonce('wp_rest')
+                ]);
             }
         }
     }

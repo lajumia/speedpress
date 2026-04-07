@@ -4,6 +4,7 @@ namespace SpeedPress\Core;
 
 use SpeedPress\Admin\Admin;
 use SpeedPress\Core\Logger;
+use SpeedPress\Core\SettingsAPI;
 
 defined('ABSPATH') || exit;
 
@@ -69,6 +70,8 @@ class Bootstrap {
             $this->init_admin();
             
             $this->run_modules();
+
+            $this->init_api();
             
 
         } catch (\Throwable $e) {
@@ -133,8 +136,6 @@ class Bootstrap {
      */
     public function on_activate() {
 
-        Logger::log('on_activate() started', 'activation');
-
         $folders = [
             SPEEDPRESS_CACHE_DIR,
             SPEEDPRESS_CACHE_HTML_DIR,
@@ -146,11 +147,89 @@ class Bootstrap {
         foreach ($folders as $folder) {
             if (!file_exists($folder)) {
                 wp_mkdir_p($folder);
-                Logger::log("Created folder: $folder", 'activation');
+    
             }
         }
 
-        Logger::log('Plugin activated', 'activation');
+        // Default settings
+        $defaults = [
+            'general' => [
+                'disable_emojis' => true,
+                'disable_imojis' => true,
+                'disable_gutenberg' => true,
+                'disable_xmlrpc' => true,
+                'disable_jquery_migrate' => true,
+                'disable_dashicons' => true,
+                'disable_rss_feeds' => true,
+                'remove_rss_links' => true,
+                'disable_password_strength_meter' => true,
+                'remove_query_strings' => true,
+                'disable_block_library_css' => true,
+                'disable_global_styles' => true,
+                'disable_gutenberg_editor' => true,
+                'disable_block_widgets' => true,
+                'disable_svg_filters' => true,
+                'heartbeat_dashboard_interval' => 15,
+                'heartbeat_editor_interval' => 15,
+                'heartbeat_frontend_interval' => 15,
+            ],
+            'cache' => [
+                'page_cache' => true,
+                'cache_expiry' => 86400,
+                'mobile_cache' => false,
+                'logged_in_cache' => false,
+                'browser_caching' => true,
+                'smart_invalidation' => true,
+                'auto_purge' => true,
+                'gzip' => true,
+                'brotli' => false,
+                'preload' => [
+                    'enable' => false,
+                    'on_publish' => true,
+                    'sitemap' => '',
+                    'scheduled' => false,
+                ],
+                'object_cache' => [
+                    'enable' => false,
+                    'redis' => false,
+                    'memcached' => false,
+                ],
+                'edge_cache' => false,
+                'exclusions' => [
+                    'urls' => ['/cart','/checkout','/my-account','/wp-admin'],
+                    'cookies' => ['woocommerce_cart_hash','woocommerce_items_in_cart'],
+                    'user_agents' => [],
+                ],
+            ],
+            'css' => [
+                'minify' => true,
+                'minify_exclusions' => ['style-handle'],
+                'combine' => false,
+                'combine_exclusions' => ['style-handle'],
+                'async' => true,
+                'async_exclusions' => ['style-handle'],
+                'remove_unused' => false,
+                'preload' => ['style-handle'],
+            ],
+            'js' => [
+                'minify' => true,
+                'minify_exclusions' => ['script-handle'],
+                'combine' => false,
+                'combine_exclusions' => ['script-handle'],
+                'defer' => true,
+                'defer_exclusions' => ['script-handle'],
+                'delay' => false,
+                'script_manager' => false,
+                'preload' => ['script-handle'],
+            ],
+        ];
+
+        // Only add defaults if option does not exist
+        if (false === get_option('speedpress_settings')) {
+            add_option('speedpress_settings', $defaults);
+        }
+
+
     }
 
     /**
@@ -200,5 +279,29 @@ class Bootstrap {
                 Logger::log("Module error [$key]: " . $e->getMessage(), 'module');
             }
         }
+    }
+
+    /**
+     * Initialize REST API routes
+     *
+     * @return void
+     * @since 1.0.0
+     */
+    private function init_api() {
+        add_action('rest_api_init', function() {
+            register_rest_route('speedpress/v1', '/settings', [
+                'methods'  => 'POST',
+                'callback' => [SettingsAPI::class, 'update_settings'],
+                'permission_callback' => function() {
+                    return current_user_can('manage_options'); // Only admin can update
+                },
+                'args' => [
+                    'settings' => [
+                        'required' => true,
+                        'type' => 'array',
+                    ]
+                ]
+            ]);
+        });
     }
 }
