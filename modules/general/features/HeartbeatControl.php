@@ -15,21 +15,8 @@ namespace SpeedPress\Modules\General\Features;
  * @package SpeedPress\Modules\General\Features
  * @since 1.0.0
  */
-class HeartbeatControl {
-
-    protected $key;
-    protected $value;
-
-    /**
-     * Constructor
-     *
-     * @param string $key Feature key
-     * @param mixed $value Interval in seconds, or 'disable' to stop heartbeat
-     */
-    public function __construct($key, $value) {
-        $this->key = $key;
-        $this->value = $value;
-    }
+class HeartbeatControl extends BaseFeature 
+{
 
     /**
      * Run the feature

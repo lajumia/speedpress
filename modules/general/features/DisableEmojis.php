@@ -11,32 +11,8 @@ namespace SpeedPress\Modules\General\Features;
  * @package SpeedPress\Modules\General\Features
  * @since 1.0.0
  */
-class DisableEmojis {
-
-    /**
-     * The settings key for this feature.
-     *
-     * @var string
-     */
-    protected $key;
-
-    /**
-     * The value of the setting (true = enabled, false = disabled)
-     *
-     * @var bool
-     */
-    protected $value;
-
-    /**
-     * Constructor
-     *
-     * @param string $key   The feature key from plugin settings.
-     * @param bool   $value Whether this feature is enabled.
-     */
-    public function __construct($key, $value) {
-        $this->key = $key;
-        $this->value = $value;
-    }
+class DisableEmojis extends BaseFeature
+{
 
     /**
      * Run the feature
