@@ -4,7 +4,7 @@ namespace SpeedPress\Core;
 
 use SpeedPress\Admin\Admin;
 use SpeedPress\Core\Logger;
-use SpeedPress\Core\SettingsAPI;
+use SpeedPress\API\SettingsAPI;
 
 defined('ABSPATH') || exit;
 

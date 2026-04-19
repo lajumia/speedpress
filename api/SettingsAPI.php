@@ -1,6 +1,6 @@
 <?php
 
-namespace SpeedPress\Core;
+namespace SpeedPress\API;
 
 class SettingsAPI {
 

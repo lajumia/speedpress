@@ -1,6 +1,6 @@
 <?php
 
-namespace SpeedPress\Modules\General\Features;
+namespace SpeedPress\Modules\CSS\Features;
 
 /**
  * Class BaseFeature
