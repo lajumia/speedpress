@@ -50,8 +50,8 @@ function speedpress_init() {
     }
 
     try {
-        $app = new Bootstrap(__FILE__);
-        $app->run();
+        $speedpress = new Bootstrap(__FILE__);
+        $speedpress->run();
     } catch (\Throwable $e) {
 
         if (defined('WP_DEBUG') && WP_DEBUG) {

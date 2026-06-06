@@ -138,17 +138,14 @@ const save = async () => {
       settings: opts,
     });
 
-    console.log('Saved:', response);
 
     toast(
       'Success',
-      'Settings saved successfully',
+      response.message,
       'success'
     );
 
   } catch (error: any) {
-
-    console.error('SAVE ERROR:', error);
 
     toast(
       'Error',

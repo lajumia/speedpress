@@ -9,7 +9,6 @@ namespace SpeedPress\Modules\General\Features;
  * Ensures a consistent interface for all features, requiring
  * implementation of the run() method.
  *
- * @package SpeedPress\Modules\CSS\Features
  * @since 1.0.0
  */
 abstract class BaseFeature {
