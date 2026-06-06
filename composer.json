@@ -1,17 +1,18 @@
 {
-    "name": "user/speedpress",
-    "autoload": {
-        "psr-4": {
-            "SpeedPress\\Core\\": "core/",
-            "SpeedPress\\Admin\\": "admin/",
-            "SpeedPress\\Modules\\": "modules/"
-            }
-    },
-    "authors": [
-        {
-            "name": "Md Laju Mia",
-            "email": "developerlaju@gmail.com"
-        }
-    ],
-    "require": {}
+  "name": "user/speedpress",
+  "autoload": {
+    "psr-4": {
+      "SpeedPress\\Core\\": "core/",
+      "SpeedPress\\Admin\\": "admin/",
+      "SpeedPress\\Modules\\": "modules/",
+      "SpeedPress\\API\\": "api/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Md Laju Mia",
+      "email": "developerlaju@gmail.com"
+    }
+  ],
+  "require": {}
 }

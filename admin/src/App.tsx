@@ -5,6 +5,9 @@ import type { SpeedPressOptions, ToastItem, DbLogItem } from './types';
 import { Toaster } from './components/Toaster';
 import { Btn, Badge } from './components/Primitives';
 
+import { getSettings } from './api/getSettings';
+import { updateSettings } from './api/updateSettings';
+
 // Pages
 import { PageDashboard } from './pages/Dashboard';
 import { PageLicense } from './pages/License';
@@ -31,8 +34,8 @@ import { CommandPalette } from './components/CommandPalette';
 
 export default function App() {
   const [dark, setDark] = useState(false);
-  const [page, setPage] = useState('dashboard');
-  const [opts, setOpts] = useState<SpeedPressOptions>(DEFAULT_OPTIONS);
+  const [page, setPage] = useState('scripts');
+  const [opts, setOpts] = useState<SpeedPressOptions>();
   const [saving, setSaving] = useState(false);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const [sideCollapsed, setSideCollapsed] = useState(false);
@@ -91,20 +94,75 @@ export default function App() {
     document.body.style.background = 'var(--bg)';
   }, [dark]);
 
+ useEffect(() => {
+
+  async function loadSettings() {
+
+    const response = await getSettings();
+    console.log(response.data);
+
+    setOpts(response.data);
+  }
+
+  loadSettings();
+
+}, []);
+
   const toast = (title: string, msg: string, type: ToastItem['type'] = 'success') => {
     const id = Date.now() + Math.random();
     setToasts((t) => [...t, { id, title, msg, type }]);
     setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 4000);
   };
 
-  const set = (k: keyof SpeedPressOptions, v: any) => setOpts((o) => ({ ...o, [k]: v }));
+const set = (
+  section: keyof SpeedPressOptions,
+  key: string,
+  value: any
+) => {
+  setOpts((o) => ({
+    ...o,
+    [section]: {
+      ...o[section],
+      [key]: value,
+    },
+  }));
+};
 
-  const save = async () => {
-    setSaving(true);
-    await new Promise((r) => setTimeout(r, 800));
-    toast('Settings saved', 'All changes applied successfully.', 'success');
+const save = async () => {
+
+  setSaving(true);
+
+  try {
+
+    const response = await updateSettings({
+      settings: opts,
+    });
+
+    console.log('Saved:', response);
+
+    toast(
+      'Success',
+      'Settings saved successfully',
+      'success'
+    );
+
+  } catch (error: any) {
+
+    console.error('SAVE ERROR:', error);
+
+    toast(
+      'Error',
+      error?.message || 'Failed to save settings',
+      'error'
+    );
+
+  } finally {
+
     setSaving(false);
-  };
+
+  }
+
+};
 
   const runPreload = async () => {
     if (preloading) return;
@@ -132,7 +190,9 @@ export default function App() {
     dbLog,
     setDbLog,
   };
-
+  if (!opts) {
+    return <div>Loading...</div>;
+  }
   const renderPage = () => {
     switch (page) {
       case 'dashboard': return <PageDashboard {...pageProps} />;
@@ -191,7 +251,7 @@ export default function App() {
           {!sideCollapsed && (
             <div className="overflow-hidden whitespace-nowrap">
               <div className="text-[16px] font-extrabold text-[var(--text)] tracking-[-0.02em]">SpeedPress</div>
-              <div className="text-[10px] text-[var(--text4)] font-mono mt-[-1px]">v2.0.0</div>
+              <div className="text-[10px] text-[var(--text4)] font-mono mt-[-1px]">v1.0.0</div>
             </div>
           )}
           <button
@@ -281,11 +341,11 @@ export default function App() {
           </button>
           <div className="min-w-0">
             <div className="text-[14px] lg:text-[16px] font-bold text-[var(--text)] truncate">{currentNav?.label || 'Dashboard'}</div>
-            <div className="text-[10px] lg:text-[11px] text-[var(--text4)] truncate">speedpress.io · yourdomain.com</div>
+            <div className="text-[10px] lg:text-[11px] text-[var(--text4)] truncate">wpspeedpress.com</div>
           </div>
           <div className="hidden md:flex gap-[6px] ml-[8px]">
-            {opts.cache_enabled && <Badge color="green" dot="pulse">Cache On</Badge>}
-            {opts.license_status === 'active' && <Badge color="blue">Pro</Badge>}
+            {/* {opts.cache_enabled && <Badge color="green" dot="pulse">Cache On</Badge>}
+            {opts.license_status === 'active' && <Badge color="blue">Pro</Badge>} */}
           </div>
 
           {/* Global Search Button */}
@@ -306,13 +366,13 @@ export default function App() {
             <button
               onClick={() => setRightSideOpen(!rightSideOpen)}
               title={rightSideOpen ? "Hide Resources" : "Show Resources"}
-              className={`w-[36px] h-[36px] flex items-center justify-center rounded-[8px] border-none cursor-pointer transition-all duration-200 ${
+              className={`w-[36px] h-[36px] flex items-center justify-center rounded-[8px] border-none cursor-pointer transition-all hidden duration-200 ${
                 rightSideOpen ? 'bg-[var(--accent-bg)] text-[var(--accent)]' : 'bg-[var(--surface2)] text-[var(--text3)] hover:text-[var(--text2)]'
               }`}
             >
               <span className="w-[20px] h-[20px]">{Icons.book}</span>
             </button>
-            <Btn variant="secondary" size="sm" icon="trash" onClick={() => toast('Cache cleared', 'All cached pages removed.', 'success')}>
+            <Btn disabled variant="secondary" size="sm" icon="trash" onClick={() => toast('Cache cleared', 'All cached pages removed.', 'success')}>
               <span className="hidden sm:inline">Clear Cache</span>
             </Btn>
             <Btn size="sm" icon="check" loading={saving} onClick={save}>
@@ -330,7 +390,7 @@ export default function App() {
       <RightSidebar open={rightSideOpen} onClose={() => setRightSideOpen(false)} />
 
       {/* Quick Actions FAB */}
-      <div className="fixed bottom-[20px] right-[20px] lg:bottom-[24px] lg:right-[24px] z-[1000] flex flex-col items-end gap-[12px]">
+      <div className="fixed hidden bottom-[20px] right-[20px] lg:bottom-[24px] lg:right-[24px] z-[1000] flex flex-col items-end gap-[12px]">
         {quickOpen && (
           <>
             <div 
@@ -343,7 +403,7 @@ export default function App() {
                 { label: 'Preload', icon: 'refresh', action: () => { runPreload(); setQuickOpen(false); } },
                 { label: 'Optimize DB', icon: 'db', action: () => { toast('DB optimized', '', 'success'); setQuickOpen(false); } },
                 { label: 'PageSpeed Scan', icon: 'activity', action: () => { toast('Scanning…', 'Report ready in ~30s.', 'info'); setQuickOpen(false); } },
-                { label: 'Safe Mode', icon: 'shield', action: () => { set('safe_mode', !opts.safe_mode); toast(opts.safe_mode ? 'Safe mode off' : 'Safe mode on', '', 'info'); setQuickOpen(false); } },
+                // { label: 'Safe Mode', icon: 'shield', action: () => { set('safe_mode', !opts.safe_mode); toast(opts.safe_mode ? 'Safe mode off' : 'Safe mode on', '', 'info'); setQuickOpen(false); } },
               ].map((a, i) => (
                 <div 
                   key={a.label} 

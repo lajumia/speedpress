@@ -11,10 +11,9 @@ class GeneralModule {
      */
     protected $features = [
         'disable_emojis'               => Features\DisableEmojis::class,
-        'disable_imojis'               => Features\DisableEmojis::class, // reuse if same
         'disable_gutenberg'            => Features\DisableGutenberg::class,
         'disable_xmlrpc'               => Features\DisableXMLRPC::class,
-        'disable_jquery_migrate'       => Features\DisableJQueryMigrate::class,
+        // 'disable_jquery_migrate'       => Features\DisableJQueryMigrate::class,
         'disable_dashicons'            => Features\DisableDashicons::class,
         'disable_rss_feeds'            => Features\DisableRSS::class,
         'remove_rss_links'             => Features\RemoveRSSLinks::class,

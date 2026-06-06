@@ -17,7 +17,7 @@ export function RightSidebar({ open, onClose }: { open: boolean; onClose?: () =>
   ];
 
   return (
-    <div className={`shrink-0 bg-[var(--sidebar-bg)] border-l border-[var(--sidebar-border)] flex flex-col transition-all duration-300 ease-in-out z-[200] 
+    <div className={`shrink-0 bg-[var(--sidebar-bg)] hidden border-l border-[var(--sidebar-border)] flex flex-col transition-all duration-300 ease-in-out z-[200] 
       fixed right-0 h-screen xl:sticky top-0 shadow-[-10px_0_30px_rgba(0,0,0,0.05)]
       ${open ? 'w-[300px] translate-x-0 opacity-100' : 'w-0 translate-x-full xl:translate-x-0 opacity-0 overflow-hidden border-none'}`}
       style={{ maxWidth: 'calc(100vw - 40px)' }}

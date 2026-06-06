@@ -154,74 +154,72 @@ class Bootstrap {
         // Default settings
         $defaults = [
             'general' => [
-                'disable_emojis' => true,
-                'disable_imojis' => true,
-                'disable_gutenberg' => true,
-                'disable_xmlrpc' => true,
-                'disable_jquery_migrate' => true,
-                'disable_dashicons' => true,
-                'disable_rss_feeds' => true,
-                'remove_rss_links' => true,
-                'disable_password_strength_meter' => true,
-                'remove_query_strings' => true,
-                'disable_block_library_css' => true,
-                'disable_global_styles' => true,
-                'disable_gutenberg_editor' => true,
-                'disable_block_widgets' => true,
-                'disable_svg_filters' => true,
+                'disable_emojis' => false,
+                'disable_embeds' => false,
+                'disable_jquery_migrate' => false,
+                'disable_dashicons' => false,
+                'disable_rss_feeds' => false,
+                'remove_rss_links' => false,
+                'disable_password_strength' => false,
+                'remove_query_strings' => false,
+                'disable_block_library_css' => false,
+                'disable_global_styles' => false,
+                'disable_gutenberg_editor' => false,
+                'disable_block_widgets' => false,
+                'disable_svg_filters' => false,
                 'heartbeat_dashboard_interval' => 15,
                 'heartbeat_editor_interval' => 15,
                 'heartbeat_frontend_interval' => 15,
             ],
-            'cache' => [
-                'page_cache' => true,
-                'cache_expiry' => 86400,
-                'mobile_cache' => false,
-                'logged_in_cache' => false,
-                'browser_caching' => true,
-                'smart_invalidation' => true,
-                'auto_purge' => true,
-                'gzip' => true,
-                'brotli' => false,
-                'preload' => [
-                    'enable' => false,
-                    'on_publish' => true,
-                    'sitemap' => '',
-                    'scheduled' => false,
-                ],
-                'object_cache' => [
-                    'enable' => false,
-                    'redis' => false,
-                    'memcached' => false,
-                ],
-                'edge_cache' => false,
-                'exclusions' => [
-                    'urls' => ['/cart','/checkout','/my-account','/wp-admin'],
-                    'cookies' => ['woocommerce_cart_hash','woocommerce_items_in_cart'],
-                    'user_agents' => [],
-                ],
-            ],
-            'css' => [
-                'minify' => true,
-                'minify_exclusions' => ['style-handle'],
-                'combine' => false,
-                'combine_exclusions' => ['style-handle'],
-                'async' => true,
-                'async_exclusions' => ['style-handle'],
-                'remove_unused' => false,
-                'preload' => ['style-handle'],
-            ],
-            'js' => [
-                'minify' => true,
-                'minify_exclusions' => ['script-handle'],
-                'combine' => false,
-                'combine_exclusions' => ['script-handle'],
-                'defer' => true,
-                'defer_exclusions' => ['script-handle'],
-                'delay' => false,
-                'script_manager' => false,
-                'preload' => ['script-handle'],
-            ],
+            // 'cache' => [
+            //     'page_cache' => true,
+            //     'cache_expiry' => 86400,
+            //     'mobile_cache' => false,
+            //     'logged_in_cache' => false,
+            //     'browser_caching' => true,
+            //     'smart_invalidation' => true,
+            //     'auto_purge' => true,
+            //     'gzip' => true,
+            //     'brotli' => false,
+            //     'preload' => [
+            //         'enable' => false,
+            //         'on_publish' => true,
+            //         'sitemap' => '',
+            //         'scheduled' => false,
+            //     ],
+            //     'object_cache' => [
+            //         'enable' => false,
+            //         'redis' => false,
+            //         'memcached' => false,
+            //     ],
+            //     'edge_cache' => false,
+            //     'exclusions' => [
+            //         'urls' => ['/cart','/checkout','/my-account','/wp-admin'],
+            //         'cookies' => ['woocommerce_cart_hash','woocommerce_items_in_cart'],
+            //         'user_agents' => [],
+            //     ],
+            // ],
+            // 'css' => [
+            //     'minify' => true,
+            //     'minify_exclusions' => ['style-handle'],
+            //     'combine' => false,
+            //     'combine_exclusions' => ['style-handle'],
+            //     'async' => true,
+            //     'async_exclusions' => ['style-handle'],
+            //     'remove_unused' => false,
+            //     'preload' => ['style-handle'],
+            // ],
+            // 'js' => [
+            //     'minify' => true,
+            //     'minify_exclusions' => ['script-handle'],
+            //     'combine' => false,
+            //     'combine_exclusions' => ['script-handle'],
+            //     'defer' => true,
+            //     'defer_exclusions' => ['script-handle'],
+            //     'delay' => false,
+            //     'script_manager' => false,
+            //     'preload' => ['script-handle'],
+            // ],
         ];
 
         // Only add defaults if option does not exist
@@ -289,6 +287,15 @@ class Bootstrap {
      */
     private function init_api() {
         add_action('rest_api_init', function() {
+            
+            register_rest_route('speedpress/v1', '/settings', [
+                'methods'  => 'GET',
+                'callback' => [SettingsAPI::class, 'get_settings'],
+                'permission_callback' => function() {
+                    return current_user_can('manage_options');
+                },
+            ]);
+            
             register_rest_route('speedpress/v1', '/settings', [
                 'methods'  => 'POST',
                 'callback' => [SettingsAPI::class, 'update_settings'],
@@ -298,10 +305,11 @@ class Bootstrap {
                 'args' => [
                     'settings' => [
                         'required' => true,
-                        'type' => 'array',
+                        'type' => 'object',
                     ]
                 ]
             ]);
         });
+
     }
 }

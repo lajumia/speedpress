@@ -97,7 +97,8 @@ class Admin {
 
                 // Localize script for APi
                 wp_localize_script('speedpress-admin', 'speedpress', [
-                    'nonce' => wp_create_nonce('wp_rest')
+                    'nonce' => wp_create_nonce('wp_rest'),
+                    'restUrl' => esc_url_raw(rest_url())
                 ]);
             }
         }
