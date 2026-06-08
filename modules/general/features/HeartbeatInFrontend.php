@@ -14,16 +14,36 @@ namespace SpeedPress\Modules\General\Features;
 class HeartbeatInFrontend extends BaseFeature
 {
     /**
-     * Register heartbeat filter.
+     * Register hooks.
      *
      * @return void
      */
     public function run(): void
     {
-        add_filter(
-            'heartbeat_settings',
-            [$this, 'modify_heartbeat_settings']
-        );
+        if ('disable' === $this->value) {
+            add_action(
+                'wp_enqueue_scripts',
+                [$this, 'disable_heartbeat'],
+                100
+            );
+        } else {
+            add_filter(
+                'heartbeat_settings',
+                [$this, 'modify_heartbeat_settings']
+            );
+        }
+    }
+
+    /**
+     * Disable Heartbeat API on frontend.
+     *
+     * @return void
+     */
+    public function disable_heartbeat(): void
+    {
+        if (! is_admin()) {
+            wp_deregister_script('heartbeat');
+        }
     }
 
     /**
@@ -38,7 +58,13 @@ class HeartbeatInFrontend extends BaseFeature
             return $settings;
         }
 
-        $settings['interval'] = (int) $this->value;
+        $allowed_intervals = [15, 60];
+
+        $interval = (int) $this->value;
+
+        if (in_array($interval, $allowed_intervals, true)) {
+            $settings['interval'] = $interval;
+        }
 
         return $settings;
     }

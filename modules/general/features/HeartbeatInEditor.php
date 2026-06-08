@@ -34,7 +34,7 @@ class HeartbeatInEditor extends BaseFeature
      */
     public function modify_heartbeat_settings(array $settings): array
     {
-        if (!is_admin()) {
+        if (! is_admin()) {
             return $settings;
         }
 
@@ -43,14 +43,22 @@ class HeartbeatInEditor extends BaseFeature
             : null;
 
         if (
-            $screen &&
-            in_array(
+            ! $screen ||
+            ! in_array(
                 $screen->base,
                 ['post', 'post-new'],
                 true
             )
         ) {
-            $settings['interval'] = (int) $this->value;
+            return $settings;
+        }
+
+        $allowed_intervals = [15, 60, 120, 300];
+
+        $interval = (int) $this->value;
+
+        if (in_array($interval, $allowed_intervals, true)) {
+            $settings['interval'] = $interval;
         }
 
         return $settings;
