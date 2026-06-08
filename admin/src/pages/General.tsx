@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardHead, Row, Toggle, Badge, Select } from '../components/Primitives';
 import type { SpeedPressOptions } from '../types';
 
-export function PageScripts({
+export function PageGeneral({
   opts,
   set,
 }: {

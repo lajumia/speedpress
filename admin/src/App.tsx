@@ -21,7 +21,7 @@ import { PagePreload } from './pages/Preload';
 import { PageDatabase } from './pages/Database';
 import { PageCDN } from './pages/CDN';
 import { PageEcommerce } from './pages/Ecommerce';
-import { PageScripts } from './pages/Scripts';
+import { PageGeneral } from './pages/General';
 import { PageMonitor } from './pages/Monitor';
 import { PageDeveloper } from './pages/Developer';
 import { PageSecurity } from './pages/Security';
@@ -35,7 +35,7 @@ import { CommandPalette } from './components/CommandPalette';
 
 export default function App() {
   const [dark, setDark] = useState(false);
-  const [page, setPage] = useState('scripts');
+  const [page, setPage] = useState('general');
   const [opts, setOpts] = useState<SpeedPressOptions>();
   const [saving, setSaving] = useState(false);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
@@ -211,7 +211,7 @@ const save = async () => {
       case 'database': return <PageDatabase {...pageProps} />;
       case 'cdn': return <PageCDN {...pageProps} />;
       case 'ecommerce': return <PageEcommerce {...pageProps} />;
-      case 'scripts': return <PageScripts {...pageProps} />;
+      case 'general': return <PageGeneral {...pageProps} />;
       case 'monitor': return <PageMonitor toast={toast} />;
       case 'developer': return <PageDeveloper {...pageProps} />;
       case 'security': return <PageSecurity {...pageProps} />;

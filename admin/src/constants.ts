@@ -4,7 +4,7 @@ export const NAV = [
   // { id: 'dashboard', label: 'Dashboard', icon: 'chart', section: null, keywords: 'home, overview, stats, performance' },
   // { id: 'license', label: 'License', icon: 'key', section: null, keywords: 'key, activation, pro, serial' },
   // { sep: true, label: 'PERFORMANCE' },
-  { id: 'scripts', label: 'General', icon: 'script', section: 'perf', keywords: 'wordpress, bloat, heartbeat, emojis, embeds, jquery' },
+  { id: 'general', label: 'General', icon: 'script', section: 'perf', keywords: 'wordpress, bloat, heartbeat, emojis, embeds, jquery' },
   // { id: 'caching', label: 'Caching', icon: 'cache', section: 'perf', keywords: 'page, object, redis, memcached, expiry, purge, warmup' },
   // { id: 'files', label: 'File Optimization', icon: 'code', section: 'perf', keywords: 'minify, combine, css, js, critical, async, defer, delay' },
   // { id: 'assetmgr', label: 'Asset Manager', icon: 'list', section: 'perf', keywords: 'scripts, styles, handles, dependencies, unload' },
