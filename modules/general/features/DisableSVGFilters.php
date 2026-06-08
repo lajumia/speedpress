@@ -5,24 +5,24 @@ namespace SpeedPress\Modules\General\Features;
 /**
  * Class DisableSVGFilters
  *
- * Disables SVG filters in WordPress to improve front-end performance.
+ * Disables WordPress SVG filters (duotone + theme.json effects).
  *
  * @package SpeedPress\Modules\General\Features
  * @since 1.0.0
  */
 class DisableSVGFilters extends BaseFeature
 {
-
     /**
-     * Run the feature
-     *
-     * Disables SVG filters if the feature is enabled.
+     * Run feature
      *
      * @return void
      */
-    public function run() {
-        if ($this->value) {
-            add_filter('wp_render_svg_use_filters', '__return_false');
+    public function run(): void
+    {
+        if (!$this->value) {
+            return;
         }
+
+        add_filter('wp_render_svg_filters', '__return_false');
     }
 }

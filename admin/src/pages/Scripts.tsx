@@ -83,8 +83,8 @@ export function PageScripts({
             value={opts.general.heartbeat_dashboard_interval} 
             onChange={(v) => set('general','heartbeat_dashboard_interval', v)} 
             options={[
-              { value: 'default', label: 'Default (15s)' },
-              { value: 'modify', label: 'Modify (60s)' },
+              { value: '15', label: 'Default (15s)' },
+              { value: '60', label: 'Modify (60s)' },
               { value: 'disable', label: 'Disable' },
             ]}
           />
@@ -106,8 +106,8 @@ export function PageScripts({
             value={opts.general.heartbeat_frontend_interval} 
             onChange={(v) => set('general','heartbeat_frontend_interval', v)} 
             options={[
-              { value: 'default', label: 'Default' },
-              { value: 'modify', label: 'Modify (120s)' },
+              { value: '60', label: 'Default' },
+              { value: '120', label: 'Modify (120s)' },
               { value: 'disable', label: 'Disable (recommended)' },
             ]}
           />

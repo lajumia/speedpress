@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { DNA } from 'react-loader-spinner'
 import { Icons } from './components/Icons';
 import { NAV, DEFAULT_OPTIONS } from './constants';
 import type { SpeedPressOptions, ToastItem, DbLogItem } from './types';
@@ -188,7 +189,14 @@ const save = async () => {
     setDbLog,
   };
   if (!opts) {
-    return <div>Loading...</div>;
+    return <DNA
+      visible={true}
+      height="80"
+      width="80"
+      ariaLabel="dna-loading"
+      wrapperStyle={{}}
+      wrapperClass="dna-wrapper"
+      />;
   }
   const renderPage = () => {
     switch (page) {

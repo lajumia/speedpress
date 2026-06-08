@@ -45,15 +45,18 @@ class GeneralModule {
         'disable_embeds'            => Features\DisableEmbeds::class,
         'disable_jquery_migrate'    => Features\DisableJQueryMigrate::class,
         'disable_dashicons'         => Features\DisableDashicons::class,
-        'disable_rss_feeds'         => Features\DisableRSS::class,
+        'disable_rss_feeds'         => Features\DisableRSSFeeds::class,
         'remove_rss_links'          => Features\RemoveRSSLinks::class,
         'disable_password_strength' => Features\DisablePasswordStrength::class,
         'remove_query_strings'      => Features\RemoveQueryStrings::class,
-        'disable_block_library_css' => Features\DisableBlockCSS::class,
+        'disable_block_library_css' => Features\DisableBlockLibraryCSS::class,
         'disable_global_styles'     => Features\DisableGlobalStyles::class,
         'disable_gutenberg_editor'  => Features\DisableGutenbergEditor::class,
         'disable_block_widgets'     => Features\DisableBlockWidgets::class,
         'disable_svg_filters'       => Features\DisableSVGFilters::class,
+        'heartbeat_dashboard_interval' => Features\HeartbeatInDashboard::class,
+        'heartbeat_editor_interval' => Features\HeartbeatInEditor::class,
+        'heartbeat_frontend_interval' => Features\HeartbeatInFrontend::class,
     ];
 
     /**

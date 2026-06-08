@@ -13,9 +13,9 @@
         "disable_gutenberg_editor": false,
         "disable_block_widgets": false,
         "disable_svg_filters": false,
-        "heartbeat_dashboard_interval": "15s",
-        "heartbeat_editor_interval": "15s",
-        "heartbeat_frontend_interval": "15s"
+        "heartbeat_dashboard_interval": "15",
+        "heartbeat_editor_interval": "60",
+        "heartbeat_frontend_interval": "disable"
     },
 
     "cache": {

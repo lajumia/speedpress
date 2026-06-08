@@ -21,7 +21,7 @@ class RemoveQueryStrings extends BaseFeature
      *
      * @return void
      */
-    public function run() {
+    public function run(): void {
         if ($this->value) {
             add_filter('script_loader_src', [$this, 'remove_version'], 15, 1);
             add_filter('style_loader_src', [$this, 'remove_version'], 15, 1);

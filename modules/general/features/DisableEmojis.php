@@ -23,9 +23,12 @@ class DisableEmojis extends BaseFeature
      */
     public function run(): void {
 
-        if ($this->value) {
-            add_action('init', [$this, 'disable_emojis']);
+        if (!$this->value) {
+            return;
         }
+        
+        add_action('init', [$this, 'disable_emojis']);
+
     }
 
     public function disable_emojis(): void {

@@ -21,7 +21,7 @@ class DisableBlockWidgets extends BaseFeature
      *
      * @return void
      */
-    public function run() {
+    public function run(): void {
         if ($this->value) {
             add_filter('use_widgets_block_editor', '__return_false');
         }

@@ -5,26 +5,40 @@ namespace SpeedPress\Modules\General\Features;
 /**
  * Class DisableDashicons
  *
- * Disables the Dashicons font on the front-end of WordPress.
- * Dashicons are normally loaded by WordPress for admin icons and some themes/plugins,
- * but removing them on the front-end can reduce CSS load and improve performance.
+ * Disables the Dashicons stylesheet on the frontend for
+ * non-logged-in users to reduce unnecessary CSS loading.
  *
  * @package SpeedPress\Modules\General\Features
  * @since 1.0.0
  */
-class DisableDashicons extends BaseFeature 
+class DisableDashicons extends BaseFeature
 {
-
     /**
-     * Run the feature
-     *
-     * Deregisters Dashicons on the front-end if the feature is enabled.
+     * Register hooks.
      *
      * @return void
      */
-    public function run() {
-        if ($this->value && !is_admin()) {
-            wp_deregister_style('dashicons');
+    public function run(): void
+    {
+        if (!$this->value) {
+            return;
         }
+
+        add_action('wp_enqueue_scripts', [$this, 'remove_dashicons'], 999);
+    }
+
+    /**
+     * Remove Dashicons stylesheet from frontend.
+     *
+     * @return void
+     */
+    public function remove_dashicons(): void
+    {
+        if (is_user_logged_in()) {
+            return;
+        }
+
+        wp_dequeue_style('dashicons');
+        wp_deregister_style('dashicons');
     }
 }
